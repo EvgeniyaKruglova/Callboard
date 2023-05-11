@@ -1,0 +1,33 @@
+{# Подключение index #}
+{% extends 'index.html' %}
+
+{# Подключение заголовка #}
+{% block title %}
+Объявления
+{% endblock title %}
+
+{# Подключение контента #}
+{% block content %}
+{# Импорт контента #}
+    <h1>Отклик.</h1>
+    {# Проверка объекта #}
+    {% if response %}
+        {# Загрузка атрибутов/полей #}
+        <p> Автор: {{ response.author }} </p>
+        <p> Объявление: {{ response.call.title }} </p>
+        <p> Отклик: {{ response.text }} </p>
+        <p> Статус: {{ response.get_status_display }} </p>
+    {% else %}
+        <p> Нет такого отклика! </p>
+    {% endif %}
+
+    {% if response.status == 'WAITING' %}
+        <a href="{% url 'response_accept' pk=response.id %}">Принять отклик</a>
+        <a href="{% url 'response_delete' pk=response.id %}">Удалить отклик</a>
+    {% else %}
+        <a>Отклик принят</a>
+    {% endif %}
+
+<a href="{% url 'user_responses' %}">Назад к откликам</a>
+
+{% endblock content %}

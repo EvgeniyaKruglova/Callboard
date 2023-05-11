@@ -1,0 +1,15 @@
+{# Подключение index #}
+{% extends 'index.html' %}
+
+{% block content %}
+<h1>Заполните форму обявления:</h1>
+<hr>
+<form action="" method="post">
+    {# Стандартная защита формы #}
+    {% csrf_token %}
+    {# Создание формы на основе представления #}
+    {{ form.media }}
+    {{ form.as_p }}
+    <input type="submit" value="Save" />
+</form>
+{% endblock content %}

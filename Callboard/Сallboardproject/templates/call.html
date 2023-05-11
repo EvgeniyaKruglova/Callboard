@@ -1,0 +1,42 @@
+{# Подключение index #}
+{% extends 'index.html' %}
+
+{# Подключение заголовка #}
+{% block title %}
+Объявление
+{% endblock title %}
+
+{# Подключение контента #}
+{% block content %}
+{# Импорт контента #}
+    <h1>Объявление.</h1>
+    {# Проверка объекта #}
+    {% if call %}
+        {# Загрузка атрибутов/полей #}
+        <p> Автор: {{ call.author }} </p>
+        <p>
+            {% for category in call.category.all %}
+                <a> Категория: {{ category }} </a>
+            {% endfor %}
+        </p>
+        <p> Объявление: {{ call.title }} </p>
+        <p> Содержание: {{ call.text }} </p>
+        <p> Мультимедиа: {{ call.content|safe }} </p>
+    {% else %}
+        <p> Нет такого объявления! </p>
+    {% endif %}
+
+{# Проверка на право отклика #}
+{% if perms.Callboardapp.add_response %}
+<a href="{% url 'response_create' pk=call.id %}">Откликнуться</a>
+{% endif %}
+{# Проверка на право изменения и удаления #}
+{% if perms.Callboardapp.change_call or perms.Callboardapp.delete_call %}
+<a href="{% url 'call_update' pk=call.id %}">Изменить</a>
+<a href="{% url 'call_delete' pk=call.id %}">Удалить</a>
+{% endif %}
+<p>
+<a href="{% url 'calls_list' %}">Назад к объявлениям</a>
+</p>
+
+{% endblock content %}

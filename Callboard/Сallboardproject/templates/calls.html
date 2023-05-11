@@ -1,0 +1,75 @@
+{# Подключение index #}
+{% extends 'index.html' %}
+
+{# Подключение тегов #}
+{% load custom_tags %}
+
+{# Подключение заголовка #}
+{% block title %}
+Объявления
+{% endblock title %}
+
+{# Подключение контента #}
+{% block content %}
+
+{# Импорт контента #}
+    <h1>Объявления:</h1>
+
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Найти" />
+    </form>
+
+    {# Проверка наличия объектов класса через контекстное имя во views приложения #}
+    {% if calls %}
+            {# Перебор объектов класса через контекстное имя во views приложения #}
+            {% for call in calls %}
+            <hr>
+            <p> Автор: {{ call.author }}</p>
+            <p>
+                {# Обращение к связанной модели через контекст #}
+                {% for category in call.category.all %}
+                Категория: {{ category }}
+                {% endfor %}
+            </p>
+            <p> Объявление: {{ call.title }}</p>
+            <p> Содержание: {{ call.text|truncatewords:20 }}</p>
+            <p> Мультимедиа: {{ call.content|safe }}</p>
+            <a href="{% url 'call_detail' pk=call.id %}">Открыть</a>
+            {% endfor %}
+    {% else %}
+        <h2>Объявлений нет!</h2>
+    {% endif %}
+
+   <hr>
+   {# Пагинация #}
+   {# Информация о предыдущих страницах #}
+   {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+   <hr>
+   {# Ссылки для перехода #}
+   {# Проверка прав на добавление #}
+   {% if perms.Callboardapp.add_call %}
+   <a href="{% url 'call_create' %}">Добавить объявление</a>
+   <a href="{% url 'user_responses' %}">Просмотреть отклики</a>
+   {% endif %}
+
+{% endblock content %}
+

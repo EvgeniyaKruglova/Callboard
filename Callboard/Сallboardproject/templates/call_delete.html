@@ -1,0 +1,12 @@
+{# Подключение index #}
+{% extends 'index.html' %}
+
+{% block content %}
+<h1>Удаление обявления:</h1>
+<hr>
+<form action="" method="post">
+    {% csrf_token %}
+    <p>Удаляем "{{ object.title }}"?</p>
+    <input type="submit" value="Delete" />
+</form>
+{% endblock content %}

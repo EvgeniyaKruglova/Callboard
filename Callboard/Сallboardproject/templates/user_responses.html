@@ -1,0 +1,65 @@
+{# Подключение index #}
+{% extends 'index.html' %}
+
+{# Подключение тегов #}
+{% load custom_tags %}
+
+{# Подключение заголовка #}
+{% block title %}
+Отклики
+{% endblock title %}
+
+{# Подключение контента #}
+{% block content %}
+
+{# Импорт контента #}
+    <h1>Отклики на мои объявления:</h1>
+
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Найти" />
+    </form>
+
+    {# Проверка наличия объектов класса через контекстное имя во views приложения #}
+    {% if user_responses %}
+            {# Перебор объектов класса через контекстное имя во views приложения #}
+            {% for response in user_responses %}
+            <hr>
+            <p> Автор: {{ response.author }} </p>
+            <p> Объявление: {{ response.call.title }} </p>
+            <p> Отклик: {{ response.text|truncatewords:20 }} </p>
+            <p> Статус: {{ response.get_status_display }} </p>
+            <a href="{% url 'response_detail' pk=response.id %}">Открыть</a>
+            {% endfor %}
+    {% else %}
+        <h2>Откликов нет!</h2>
+    {% endif %}
+
+   <hr>
+   {# Пагинация #}
+   {# Информация о предыдущих страницах #}
+   {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+<hr>
+<a href="{% url 'calls_list' %}">Назад объявлениям</a>
+
+{% endblock content %}
+
